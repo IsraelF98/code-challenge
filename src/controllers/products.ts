@@ -4,10 +4,15 @@ import { Product } from "../types/products.type.js";
 
 export const productsController = {
   getAll(): Promise<[QueryResult, FieldPacket[]]> {
-    return con.query("SELECT * FROM products");
+    return con.query(
+      "SELECT p.id, p.name, p.price, c.colorName as color FROM products p INNER JOIN colors c ON p.colorID = c.id"
+    );
   },
   getOne(id: number): Promise<[QueryResult, FieldPacket[]]> {
-    return con.query("SELECT * FROM products WHERE id = ?", [id]);
+    return con.query(
+      "SELECT p.id, p.name, p.price, c.colorName as color FROM products p INNER JOIN colors c ON p.colorID = c.id WHERE p.id = ?",
+      [id]
+    );
   },
   async create(payload: Product): Promise<[QueryResult, FieldPacket[]]> {
     const [data]: [QueryResult, FieldPacket[]] = await con.query(
@@ -15,7 +20,10 @@ export const productsController = {
       [payload.name, payload.price, payload.colorID]
     );
     const { insertId } = data as unknown as ResultSetHeader;
-    return con.query("SELECT * FROM products WHERE id = ?", [insertId]);
+    return con.query(
+      "SELECT p.id, p.name, p.price, c.colorName as color FROM products p INNER JOIN colors c ON p.colorID = c.id WHERE p.id = ?",
+      [insertId]
+    );
   },
   async update(
     id: number,
