@@ -2,7 +2,7 @@ import { FieldPacket, QueryResult, ResultSetHeader } from "mysql2/promise";
 import { con } from "../config/database.js";
 import { Product } from "../types/products.type.js";
 
-export const productsController = {
+export const productsRepository = {
   getAll(): Promise<[QueryResult, FieldPacket[]]> {
     return con.query(
       "SELECT p.id, p.name, p.price, c.colorName as color FROM products p INNER JOIN colors c ON p.colorID = c.id"
